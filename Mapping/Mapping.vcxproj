@@ -1,0 +1,150 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{5EB93078-8D42-48AB-9FB0-97731C5249E7}</ProjectGuid>
+    <Keyword>QtVS_v304</Keyword>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0</WindowsTargetPlatformVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
+    <QtInstall>6.10.1_msvc2022_64</QtInstall>
+    <QtModules>charts;chartsqml;core;datavisualization;datavisualizationqml;graphs;graphswidgets;gui;serialbus;serialport;widgets;xml</QtModules>
+    <QtBuildConfig>debug</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
+    <QtInstall>6.10.1_msvc2022_64</QtInstall>
+    <QtModules>charts;chartsqml;core;datavisualization;datavisualizationqml;graphs;graphswidgets;gui;serialbus;serialport;widgets;xml</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <OpenCVRoot>C:\OpenCV\opencv\build</OpenCVRoot>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <LocalDebuggerEnvironment>PATH=$(OpenCVRoot)\x64\vc16\bin;%PATH%</LocalDebuggerEnvironment>
+    <LocalDebuggerMergeEnvironment>true</LocalDebuggerMergeEnvironment>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <LocalDebuggerEnvironment>PATH=$(OpenCVRoot)\x64\vc16\bin;%PATH%</LocalDebuggerEnvironment>
+    <LocalDebuggerMergeEnvironment>true</LocalDebuggerMergeEnvironment>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(OpenCVRoot)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(OpenCVRoot)\x64\vc16\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world4120d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>if exist "$(OpenCVRoot)\x64\vc16\bin\opencv_world4120d.dll" copy /Y "$(OpenCVRoot)\x64\vc16\bin\opencv_world4120d.dll" "$(OutDir)"
+if exist "C:\Program Files\Pixelink\bin\x64\PxLAPI40.dll" copy /Y "C:\Program Files\Pixelink\bin\x64\PxLAPI40.dll" "$(OutDir)"
+if exist "C:\Program Files\Pixelink\bin\x64\PxLAPI41.dll" copy /Y "C:\Program Files\Pixelink\bin\x64\PxLAPI41.dll" "$(OutDir)"
+if exist "C:\Program Files\Pixelink\bin\x64\pxlzlib.dll" copy /Y "C:\Program Files\Pixelink\bin\x64\pxlzlib.dll" "$(OutDir)"
+if exist "C:\Qt\6.10.1\msvc2022_64\bin\windeployqt.exe" "C:\Qt\6.10.1\msvc2022_64\bin\windeployqt.exe" --debug --compiler-runtime --no-translations --force "$(TargetPath)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ClCompile>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <ConformanceMode>true</ConformanceMode>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(OpenCVRoot)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalLibraryDirectories>$(OpenCVRoot)\x64\vc16\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>opencv_world4120.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PostBuildEvent>
+      <Command>if exist "$(OpenCVRoot)\x64\vc16\bin\opencv_world4120.dll" copy /Y "$(OpenCVRoot)\x64\vc16\bin\opencv_world4120.dll" "$(OutDir)"
+if exist "C:\Program Files\Pixelink\bin\x64\PxLAPI40.dll" copy /Y "C:\Program Files\Pixelink\bin\x64\PxLAPI40.dll" "$(OutDir)"
+if exist "C:\Program Files\Pixelink\bin\x64\PxLAPI41.dll" copy /Y "C:\Program Files\Pixelink\bin\x64\PxLAPI41.dll" "$(OutDir)"
+if exist "C:\Program Files\Pixelink\bin\x64\pxlzlib.dll" copy /Y "C:\Program Files\Pixelink\bin\x64\pxlzlib.dll" "$(OutDir)"
+if exist "C:\Qt\6.10.1\msvc2022_64\bin\windeployqt.exe" "C:\Qt\6.10.1\msvc2022_64\bin\windeployqt.exe" --release --compiler-runtime --no-translations --force "$(TargetPath)"</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="HeatMap.cpp" />
+    <ClCompile Include="HeatMapWindow.cpp" />
+    <ClCompile Include="MotorController.cpp" />
+    <ClCompile Include="PixelinkConnect.cpp" />
+    <ClCompile Include="ThorlabsConnect.cpp" />
+    <ClCompile Include="worker.cpp" />
+    <QtRcc Include="Mapping.qrc" />
+    <QtUic Include="Mapping.ui" />
+    <QtMoc Include="Mapping.h" />
+    <ClCompile Include="Mapping.cpp" />
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="HeatMap.h" />
+    <ClInclude Include="HeatMapWindow.h" />
+    <ClInclude Include="IDataAcquisition.h" />
+    <QtMoc Include="MotorController.h" />
+    <ClInclude Include="Options.h" />
+    <ClInclude Include="PixelinkConnect.h" />
+    <ClInclude Include="ThorlabsConnect.h" />
+    <QtMoc Include="worker.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
