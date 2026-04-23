@@ -1,6 +1,7 @@
 #include <QApplication>
 #include <QMetaType>
 #include <QPalette>
+#include <QTimer>
 #include <QStyleFactory>
 #include <QColor>
 
@@ -39,6 +40,9 @@ int main(int argc, char *argv[])
 
     Mapping window;
     window.show();
+    QTimer::singleShot(0, &window, [&window]() {
+        window.showMaximized();
+    });
 
     return app.exec();
 }

@@ -20,6 +20,7 @@
 #include <QScreen>
 #include <QTextStream>
 #include <QThread>
+#include <QTimer>
 
 #include <QtCharts/QChart>
 #include <QtCharts/QChartView>
@@ -34,14 +35,6 @@ Mapping::Mapping(QWidget* parent)
 {
     setupUi();
     setupThreading();
-
-    if (QScreen* screen = QGuiApplication::primaryScreen()) {
-        const QRect available = screen->availableGeometry();
-        resize(qRound(available.width() * 0.9), qRound(available.height() * 0.9));
-        move(available.center() - rect().center());
-    } else {
-        resize(1280, 900);
-    }
 
     const Options options = currentOptions();
     m_heatMap.configure(options);
@@ -137,6 +130,14 @@ void Mapping::setupUi()
 
     onDeviceSelectionChanged(m_selectedDevice);
 
+    if (ui.tabWidget && ui.tabSettings) {
+        connect(ui.tabWidget, &QTabWidget::currentChanged, this, [this](int index) {
+            if (ui.tabWidget->widget(index) == ui.tabSettings) {
+                populatePortCombos();
+            }
+        });
+    }
+
     m_connectionStatusLabel = new QLabel(this);
     m_connectionStatusLabel->setText(QStringLiteral("Acquisition: Disconnected | Motor: Disconnected"));
     ui.statusBar->addWidget(m_connectionStatusLabel, 1);
@@ -179,8 +180,10 @@ void Mapping::setupUi()
 void Mapping::populatePortCombos()
 {
     const QList<QSerialPortInfo> ports = QSerialPortInfo::availablePorts();
+    const QString currentPortX = ui.comboPortX ? ui.comboPortX->currentData().toString() : QString();
+    const QString currentPortY = ui.comboPortY ? ui.comboPortY->currentData().toString() : QString();
 
-    const auto fillCombo = [&ports](QComboBox* combo, const QString& fallback) {
+    const auto fillCombo = [&ports](QComboBox* combo, const QString& fallback, const QString& preferredPort, int preferredIndex) {
         combo->clear();
         if (ports.isEmpty()) {
             combo->addItem(fallback);
@@ -194,17 +197,19 @@ void Mapping::populatePortCombos()
             }
             combo->addItem(label, port.portName());
         }
+
+        int selectedIndex = -1;
+        if (!preferredPort.isEmpty()) {
+            selectedIndex = combo->findData(preferredPort);
+        }
+        if (selectedIndex < 0) {
+            selectedIndex = qBound(0, preferredIndex, combo->count() - 1);
+        }
+        combo->setCurrentIndex(selectedIndex);
     };
 
-    fillCombo(ui.comboPortX, QStringLiteral("COM1"));
-    fillCombo(ui.comboPortY, QStringLiteral("COM2"));
-
-    if (ui.comboPortX->count() > 0) {
-        ui.comboPortX->setCurrentIndex(0);
-    }
-    if (ui.comboPortY->count() > 0) {
-        ui.comboPortY->setCurrentIndex(qMin(1, ui.comboPortY->count() - 1));
-    }
+    fillCombo(ui.comboPortX, QStringLiteral("None"), currentPortX, 0);
+    fillCombo(ui.comboPortY, QStringLiteral("None"), currentPortY, 1);
 }
 
 void Mapping::setupThreading()
